@@ -1,0 +1,352 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local camera = game.Workspace.CurrentCamera
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local Guienalden = false
+
+
+local Gui = Instance.new("ScreenGui")
+Gui.Parent = player:WaitForChild("PlayerGui")
+Gui.ResetOnSpawn = false
+Gui.Name = "AtomScript"
+Gui.Enabled = false
+Gui.DisplayOrder = 999999 
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode.RightShift or input.KeyCode == Enum.KeyCode.Equals then
+		if Guienalden == true then
+			Gui.Enabled = false
+			Guienalden = false
+		else
+			Gui.Enabled = true
+			Guienalden = true
+		end
+	end
+end)
+
+local Backroundframe = Instance.new("Frame")
+Backroundframe.Parent = Gui
+Backroundframe.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Backroundframe.BackgroundTransparency = 1
+Backroundframe.Size = UDim2.new(1, 0, 1, 0)
+Backroundframe.Visible = true
+local Uishadow = Instance.new("UIShadow")
+Uishadow.Parent = Backroundframe
+Uishadow.Color = Color3.fromRGB(0, 0, 0)
+Uishadow.BlurRadius = UDim.new(0, 100)
+Uishadow.Transparency = 0.5
+
+local framePlayer = Instance.new("TextButton")
+framePlayer.Parent = Backroundframe
+framePlayer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+framePlayer.BackgroundTransparency = 0.5
+framePlayer.Size = UDim2.new(0, 150, 0, 20)
+framePlayer.Position = UDim2.new(0, 100, 0, 10)
+framePlayer.Text = ""
+
+local Uishadow = Instance.new("UIShadow")
+Uishadow.Parent = framePlayer
+Uishadow.Color = Color3.fromRGB(0, 0, 0)
+Uishadow.BlurRadius = UDim.new(0, 99)
+Uishadow.Transparency = 0.5
+local UiCorner = Instance.new("UICorner")
+UiCorner.Parent = framePlayer
+UiCorner.CornerRadius = UDim.new(0, 3)
+local UiStroke = Instance.new("UIStroke")
+UiStroke.Parent = framePlayer
+UiStroke.Color = Color3.fromRGB(74, 74, 74)
+UiStroke.Thickness = 2
+UiStroke.Transparency = 0.8
+local textFramePlayer = Instance.new("TextLabel")
+textFramePlayer.Parent = framePlayer
+textFramePlayer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+textFramePlayer.BackgroundTransparency = 1
+textFramePlayer.Position = UDim2.new(0, 10, 0, 0)
+textFramePlayer.Size = UDim2.new(1, 0, 1, 0)
+textFramePlayer.Text = "Player"
+textFramePlayer.TextColor3 = Color3.fromRGB(255, 255, 255)
+textFramePlayer.TextScaled = true
+textFramePlayer.TextWrapped = true
+textFramePlayer.TextXAlignment = Enum.TextXAlignment.Left
+textFramePlayer.TextYAlignment = Enum.TextYAlignment.Center
+textFramePlayer.Font = Enum.Font.Michroma
+local ButtonFramePlayer = Instance.new("ImageButton")
+ButtonFramePlayer.Parent = framePlayer
+ButtonFramePlayer.Size = UDim2.new(0, 13, 0, 13)
+ButtonFramePlayer.BackgroundTransparency = 1
+ButtonFramePlayer.Position = UDim2.new(0, 130, 0, 3.5)
+ButtonFramePlayer.Image = "rbxassetid://6253459868"
+ButtonFramePlayer.Rotation = 270
+local playerFrame
+playerFrame = Instance.new("Frame")
+playerFrame.Parent = framePlayer
+playerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+playerFrame.BackgroundTransparency = 0.5
+playerFrame.Size = UDim2.new(0, 150, 0, 600)
+playerFrame.Position = UDim2.new(0, 0, 0, 25)
+playerFrame.ZIndex = 1
+local Uishadow = Instance.new("UIShadow")
+Uishadow.Parent = playerFrame
+Uishadow.Color = Color3.fromRGB(0, 0, 0)
+Uishadow.BlurRadius = UDim.new(0, 99)
+Uishadow.Transparency = 0.5
+local UiCorner = Instance.new("UICorner")
+UiCorner.Parent = playerFrame
+UiCorner.CornerRadius = UDim.new(0, 3)
+local UiStroke = Instance.new("UIStroke")
+UiStroke.Parent = playerFrame
+UiStroke.Color = Color3.fromRGB(74, 74, 74)
+UiStroke.Thickness = 2
+UiStroke.Transparency = 0.8
+local scrolingplayer = Instance.new("ScrollingFrame")
+scrolingplayer.Parent = playerFrame
+scrolingplayer.Size = UDim2.new(0, 150, 0, 600)
+scrolingplayer.BackgroundTransparency = 1
+local mouse = player:GetMouse()
+local isDragging = false
+local dragConnection = nil
+local dragOffset = nil
+
+framePlayer.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		isDragging = true
+		dragOffset = Vector2.new(mouse.X - framePlayer.AbsolutePosition.X, mouse.Y - framePlayer.AbsolutePosition.Y)
+
+		if dragConnection then
+			dragConnection:Disconnect()
+			dragConnection = nil
+		end
+
+		dragConnection = runService.Heartbeat:Connect(function()
+			if isDragging then
+				local xm = mouse.X - dragOffset.X
+				local ym = mouse.Y - dragOffset.Y
+				framePlayer.Position = UDim2.new(0, xm, 0, ym)
+			end
+		end)
+	end
+end)
+
+framePlayer.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		isDragging = false
+		if dragConnection then
+			dragConnection:Disconnect()
+			dragConnection = nil
+		end
+	end
+end)
+
+local buttonspeed = Instance.new("TextLabel")
+buttonspeed.Parent = scrolingplayer
+buttonspeed.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+buttonspeed.BackgroundTransparency = 1
+buttonspeed.Position = UDim2.new(0, 20, 0, 3)
+buttonspeed.Size = UDim2.new(0, 100, 0, 20)
+buttonspeed.Text = "Speed"
+buttonspeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+buttonspeed.TextScaled = true
+buttonspeed.TextWrapped = true
+buttonspeed.Font = Enum.Font.Michroma
+buttonspeed.ZIndex = 10
+local onbutton = Instance.new("ImageButton")
+onbutton.Parent = scrolingplayer
+onbutton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+onbutton.BackgroundTransparency = 1
+onbutton.Position = UDim2.new(0, 10, 0, 5)
+onbutton.Size = UDim2.new(0, 17, 0, 17)
+onbutton.Image = "rbxassetid://264596039"
+speedenal = false
+buttonspeed.Font = Enum.Font.Michroma
+speedsettingbuttonenal = false
+local speedsettingFrame = Instance.new("Frame")
+speedsettingFrame.Parent = onbutton
+speedsettingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+speedsettingFrame.BackgroundTransparency = 0.2
+speedsettingFrame.Size = UDim2.new(0, 130, 0, 80)
+speedsettingFrame.Visible = false
+speedsettingFrame.Position = UDim2.new(0, -5, 0, 20)
+speedsettingFrame.ZIndex = 100
+local UiCorner = Instance.new("UICorner")
+UiCorner.Parent = speedsettingFrame
+UiCorner.CornerRadius = UDim.new(0, 3)
+local textFrame = Instance.new("TextLabel")
+textFrame.Parent = speedsettingFrame
+textFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textFrame.BackgroundTransparency = 1
+textFrame.Position = UDim2.new(0, 10, 0, 1)
+textFrame.Size = UDim2.new(0, 80, 0, 20)
+textFrame.Text = "WalkSpeed"
+textFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
+textFrame.TextScaled = true
+textFrame.TextWrapped = true
+textFrame.Font = Enum.Font.Michroma
+textFrame.ZIndex = 120
+local textspeedbox = Instance.new("TextBox")
+textspeedbox.Parent = speedsettingFrame
+textspeedbox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textspeedbox.BackgroundTransparency = 0.5
+textspeedbox.Position = UDim2.new(0, 10, 0, 20)
+textspeedbox.Size = UDim2.new(0, 80, 0, 20)
+textspeedbox.Text = "32"
+textspeedbox.Font = Enum.Font.Michroma
+textspeedbox.ZIndex = 120
+
+textspeedbox.Changed:Connect(function()
+	if speedenal == true then
+		while wait(1) do
+			if speedenal == true then
+				humanoid.WalkSpeed = textspeedbox.Text
+			else
+				break
+			end
+		end
+	else
+		humanoid.WalkSpeed = 16
+	end
+end)
+textspeedbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+textspeedbox.TextScaled = true
+onbutton.MouseButton1Click:Connect(function()
+	if speedenal == false then
+
+		speedenal = true
+		onbutton.Image = "rbxassetid://123320342227131"
+		humanoid.WalkSpeed = textspeedbox.Text
+	else
+		speedenal = false
+		onbutton.Image = "rbxassetid://264596039"
+		humanoid.WalkSpeed = 16
+	end
+end)
+onbutton.MouseButton2Click:Connect(function()
+	if speedsettingbuttonenal == false then
+		speedsettingbuttonenal = true
+		speedsettingFrame.Visible = true
+
+
+	else
+		speedsettingbuttonenal = false
+		speedsettingFrame.Visible = false
+
+	end
+end)
+
+local HeightJump = Instance.new("TextLabel")
+HeightJump.Parent = scrolingplayer
+HeightJump.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+HeightJump.BackgroundTransparency = 1
+HeightJump.Position = UDim2.new(0, 35, 0, 3+20)
+HeightJump.Size = UDim2.new(0, 100, 0, 30)
+HeightJump.Text = "Height Jump"
+HeightJump.TextColor3 = Color3.fromRGB(255, 255, 255)
+HeightJump.TextSize = 14
+HeightJump.TextWrapped = true
+HeightJump.Font = Enum.Font.Michroma
+HeightJump.ZIndex = 10
+
+local onbuttonHeightJump = Instance.new("ImageButton")
+onbuttonHeightJump.Parent = scrolingplayer
+onbuttonHeightJump.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+onbuttonHeightJump.BackgroundTransparency = 1
+onbuttonHeightJump.Position = UDim2.new(0, 10, 0, 8+20)
+onbuttonHeightJump.Size = UDim2.new(0, 17, 0, 17)
+onbuttonHeightJump.Image = "rbxassetid://264596039"
+HeightJumpenal = false
+HeightJumpsettingbuttonenal = false
+
+local HeightJumpsettingFrame = Instance.new("Frame")
+HeightJumpsettingFrame.Parent = onbuttonHeightJump
+HeightJumpsettingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+HeightJumpsettingFrame.BackgroundTransparency = 0.2
+HeightJumpsettingFrame.Size = UDim2.new(0, 130, 0, 80)
+HeightJumpsettingFrame.Visible = false
+HeightJumpsettingFrame.Position = UDim2.new(0, -5, 0, 20)
+HeightJumpsettingFrame.ZIndex = 100
+local UiCorner = Instance.new("UICorner")
+UiCorner.Parent = HeightJumpsettingFrame
+UiCorner.CornerRadius = UDim.new(0, 3)
+local textFrame = Instance.new("TextLabel")
+textFrame.Parent = HeightJumpsettingFrame
+textFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textFrame.BackgroundTransparency = 1
+textFrame.Position = UDim2.new(0, 10, 0, 1)
+textFrame.Size = UDim2.new(0, 80, 0, 20)
+textFrame.Text = "JumpHeight"
+textFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
+textFrame.TextScaled = true
+textFrame.TextWrapped = true
+textFrame.Font = Enum.Font.Michroma
+textFrame.ZIndex = 120
+local textHeightJumpbox = Instance.new("TextBox")
+textHeightJumpbox.Parent = HeightJumpsettingFrame
+textHeightJumpbox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textHeightJumpbox.BackgroundTransparency = 0.5
+textHeightJumpbox.Position = UDim2.new(0, 10, 0, 20)
+textHeightJumpbox.Size = UDim2.new(0, 80, 0, 20)
+textHeightJumpbox.Text = "16"
+textHeightJumpbox.Font = Enum.Font.Michroma
+textHeightJumpbox.ZIndex = 120
+
+textHeightJumpbox.Changed:Connect(function()
+	if HeightJumpenal == true then
+		
+	else
+		humanoid.JumpHeight = 7.2
+	end
+end)
+textHeightJumpbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+textHeightJumpbox.TextScaled = true
+onbuttonHeightJump.MouseButton1Click:Connect(function()
+	if HeightJumpenal == false then
+
+		HeightJumpenal = true
+		onbuttonHeightJump.Image = "rbxassetid://123320342227131"
+		humanoid.JumpHeight = textHeightJumpbox.Text
+		while wait(1) do
+			if HeightJumpenal == true then
+				humanoid.JumpHeight = textHeightJumpbox.Text
+			else
+				break
+			end
+		end
+	else
+		HeightJumpenal = false
+		onbuttonHeightJump.Image = "rbxassetid://264596039"
+		humanoid.JumpHeight = 7.2
+	end
+end)
+onbuttonHeightJump.MouseButton2Click:Connect(function()
+	if HeightJumpsettingbuttonenal == false then
+		HeightJumpsettingbuttonenal = true
+		HeightJumpsettingFrame.Visible = true
+
+
+	else
+		HeightJumpsettingbuttonenal = false
+		HeightJumpsettingFrame.Visible = false
+
+	end
+end)
+
+local playerenal = true
+ButtonFramePlayer.Activated:Connect(function()
+	if playerenal == true then
+		playerenal = false
+		ButtonFramePlayer.Rotation = 90
+		playerFrame.Visible = false
+	else
+		playerenal = true
+		ButtonFramePlayer.Rotation = 270
+		playerFrame.Visible = true
+	end
+end)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+	Title = "AtomixScript by RuakupOne" ,
+	Text = "Откраваеться скрипт на RightShift ( Левый шифт ) или на Equals ( = )",
+	Duration = 10,
+})
