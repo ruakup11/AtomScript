@@ -353,7 +353,7 @@ ButtonFramePlayer.Activated:Connect(function()
 end)
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
-	Title = "AtomixScript by RuakupOne" ,
+	Title = "AtomixScript by Ruakup" ,
 	Text = "Откраваеться скрипт на RightShift ( Левый шифт ) или на Equals ( = )",
 	Duration = 10,
 })
