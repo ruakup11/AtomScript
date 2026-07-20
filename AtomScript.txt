@@ -215,6 +215,9 @@ onbutton.MouseButton1Click:Connect(function()
 
 		speedenal = true
 		onbutton.Image = "rbxassetid://123320342227131"
+		local player = game.Players.LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+		local humanoid = character:WaitForChild("Humanoid")
 		humanoid.WalkSpeed = textspeedbox.Text
 	else
 		speedenal = false
@@ -305,7 +308,11 @@ onbuttonHeightJump.MouseButton1Click:Connect(function()
 
 		HeightJumpenal = true
 		onbuttonHeightJump.Image = "rbxassetid://123320342227131"
+		local player = game.Players.LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+		local humanoid = character:WaitForChild("Humanoid")
 		humanoid.JumpHeight = textHeightJumpbox.Text
+		
 		while wait(1) do
 			if HeightJumpenal == true then
 				humanoid.JumpHeight = textHeightJumpbox.Text
